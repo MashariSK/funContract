@@ -6,7 +6,7 @@ pragma solidity ^0.8.4;
 // import "../interfaces/VRFCoordinatorV2Interface.sol";
 // import "../VRFConsumerBaseV2.sol";
 
-contract VRFCoordinatorV2Mock is VRFCoordinatorV2Interface {
+contract VRFCoordinatorV2Mock  {
   uint96 public immutable BASE_FEE;
   uint96 public immutable GAS_PRICE_LINK;
   uint16 public immutable MAX_CONSUMERS = 100;
