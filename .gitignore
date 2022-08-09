@@ -1,0 +1,14 @@
+node_modules
+.env
+coverage
+coverage.json
+typechain
+typechain-types
+gas-report.txt
+artifacts/
+yarn
+.encryptedKey.json
+cache
+.DS_Store
+deployments
+.prettierrc
