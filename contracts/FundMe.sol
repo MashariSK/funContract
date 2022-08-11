@@ -18,7 +18,6 @@ contract FundMe {
     AggregatorV3Interface private priceFeed;
 
     modifier onlyOwner() {
-        // require(msg.sender == owner);
         if (msg.sender != owner) revert FundMe__owner(); 
         _;
     }
@@ -36,7 +35,6 @@ contract FundMe {
 
     function withdraw() public onlyOwner {
         address[] memory funders = funders;
-        // mappings can't be in memory, sorry!
         for (uint256 i = 0; i < funders.length; i++) {
             address funder = funders[i];
             addressAmountfunded[funder] = 0;

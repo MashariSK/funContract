@@ -8,8 +8,7 @@ describe("FundMe",  function () {
     let deployer
     let mockV3Aggregator
 
-    const sendValue = ethers.utils.parseEther("1")
-
+    const oneEth = ethers.utils.parseEther("1")
     beforeEach(async () => {
 
         deployer = (await getNamedAccounts()).deployer
@@ -30,23 +29,21 @@ describe("FundMe",  function () {
 
     describe("fund", function () {
         it("adds funder to array funder", async () => {
-            // const tx = await fundMe.fund()
-            await fundMe.fund({ value: sendValue })
+            await fundMe.fund({ value: oneEth })
             const res = await fundMe.getFunder(0)
             assert.equal(res, deployer )
         })
 
         it("Updated the amount funded ", async () => {
-            await fundMe.fund({value: sendValue})
+            await fundMe.fund({value: oneEth})
             const res = await fundMe.getAddressToAmountFunded(deployer)
-            assert.equal(res.toString(), sendValue.toString())
+            assert.equal(res.toString(), oneEth.toString())
         })
     })
 
     describe("withdraw", function () {
-
         beforeEach(async () => {
-            await fundMe.fund({ value: sendValue })
+            await fundMe.fund({ value: oneEth })
         })
 
         it("withdraws ETH from a single funder", async () => {
@@ -70,12 +67,10 @@ describe("FundMe",  function () {
 
         it("is allows us to withdraw with multiple funders", async () => {
             const accounts = await ethers.getSigners()
-            
-            console.log((accounts))
 
             for (i = 1; i < 6; i++) {
                 const fundMeConnectedContract = await fundMe.connect(accounts[i])
-                await fundMeConnectedContract.fund({ value: sendValue })
+                await fundMeConnectedContract.fund({ value: oneEth })
             }
 
             const startingFundMeBalance = await fundMe.provider.getBalance(fundMe.address)
@@ -85,21 +80,20 @@ describe("FundMe",  function () {
             const transactionReceipt = await transactionResponse.wait()
             const { gasUsed, effectiveGasPrice } = transactionReceipt
             const withdrawGasCost = gasUsed.mul(effectiveGasPrice)
-            console.log(`GasCost: ${withdrawGasCost}`)
-            console.log(`GasUsed: ${gasUsed}`)
-            console.log(`GasPrice: ${effectiveGasPrice}`)
+            // console.log(`GasCost: ${withdrawGasCost}`)
+            // console.log(`GasUsed: ${gasUsed}`)
+            // console.log(`GasPrice: ${effectiveGasPrice}`)
             const endingFundMeBalance = await fundMe.provider.getBalance(fundMe.address)
             const endingDeployerBalance = await fundMe.provider.getBalance(deployer)
             
-            assert.equal(
-                startingFundMeBalance.add(startingDeployerBalance).toString(),
-                endingDeployerBalance.add(withdrawGasCost).toString())
+            assert.equal(startingFundMeBalance.add(startingDeployerBalance).toString(),
+            endingDeployerBalance.add(withdrawGasCost).toString())
 
             await expect(fundMe.getFunder(0)).to.be.reverted
 
-            for (i = 1; i < 6; i++) {
+            for (i = 1; i < 6; i++) 
                 assert.equal(await fundMe.getAddressToAmountFunded(accounts[i].address), 0)
-            }
+            
         })
 
         it("Only allows the owner to withdraw", async function () {
